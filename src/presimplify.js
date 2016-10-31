@@ -14,17 +14,9 @@ export default function(topology, weight) {
         maxWeight = 0,
         triangle,
         i,
-        n,
-        p;
+        n;
 
-    // To store each point’s effective weight, we create a new array rather than
-    // extending the passed-in point to workaround a Chrome/V8 bug (getting
-    // stuck in smi mode). For midpoints, the initial effective weight of
-    // Infinity will be computed in the next step.
-    for (i = 0, n = arc.length; i < n; ++i) {
-      p = arc[i];
-      absolute(arc[i] = [p[0], p[1], Infinity], i);
-    }
+    arc.forEach(absolute);
 
     for (i = 1, n = arc.length - 1; i < n; ++i) {
       triangle = arc.slice(i - 1, i + 2);
@@ -32,6 +24,9 @@ export default function(topology, weight) {
       triangles.push(triangle);
       heap.push(triangle);
     }
+
+    // Always keep the arc endpoints!
+    arc[0][2] = arc[n][2] = Infinity;
 
     for (i = 0, n = triangles.length; i < n; ++i) {
       triangle = triangles[i];

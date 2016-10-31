@@ -30,7 +30,7 @@ topojson.presimplify(topology);
 
 <a name="quantile" href="#quantile">#</a> topojson.<b>quantile</b>(<i>topology</i>, <i>p</i>)
 
-…
+… Returns the *p*-quantile of the weighted points in the given *topology*, where *p* is a number in the range [0, 1]. This value is then typically passed to [simplify](#simplify) as the *minWeight*. For example, the median weight can be computed using *p* = 0.5, the first quartile at *p* = 0.25, and the third quartile at *p* = 0.75. This particular implementation uses the [R-7 method](https://en.wikipedia.org/wiki/Quantile#Quantiles_of_a_population), which is the default for the R programming language and Excel. The specified *topology* must have previously been passed to [presimplify](#presimplify).
 
 ### Filtering
 

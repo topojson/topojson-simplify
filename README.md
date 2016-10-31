@@ -40,7 +40,7 @@ To filter a topology, you supply a *filter* function to [filter](#filter). The *
 
 See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
 
-<a name="filter" href="#filter">#</a> topojson.<b>filter</b>(<i>topology</i>[, <i>filterRing</i>])
+<a name="filter" href="#filter">#</a> topojson.<b>filter</b>(<i>topology</i>[, <i>filter</i>])
 
 …
 

@@ -1,9 +1,9 @@
 import prune from "./prune";
 
-export default function(topology, filterRing) {
+export default function(topology, filter) {
   var name;
 
-  if (filterRing == null) filterRing = filterTrue;
+  if (filter == null) filter = filterTrue;
 
   function filterGeometry(o) {
     switch (o.type) {
@@ -33,11 +33,11 @@ export default function(topology, filterRing) {
   }
 
   function filterExteriorRing(ring) {
-    return filterRing(ring, false);
+    return filter(ring, false);
   }
 
   function filterInteriorRing(ring) {
-    return filterRing(ring, true);
+    return filter(ring, true);
   }
 
   for (name in topology.objects) {

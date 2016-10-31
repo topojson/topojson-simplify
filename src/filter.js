@@ -3,6 +3,8 @@ import prune from "./prune";
 export default function(topology, filterRing) {
   var name;
 
+  if (filterRing == null) filterRing = filterTrue;
+
   function filterGeometry(o) {
     switch (o.type) {
       case "Polygon": {
@@ -43,6 +45,10 @@ export default function(topology, filterRing) {
   }
 
   return prune(topology);
+}
+
+function filterTrue() {
+  return true;
 }
 
 function filterIdentity(x) {

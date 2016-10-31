@@ -1,7 +1,7 @@
 {
   "name": "topojson-simplify",
   "version": "0.0.0",
-  "description": "Topology-preserving simplification for TopoJSON.",
+  "description": "Topology-preserving simplification and filtering for TopoJSON.",
   "keywords": [
     "topojson",
     "geojson",

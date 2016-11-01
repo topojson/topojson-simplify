@@ -64,16 +64,16 @@ function write(topology) {
   topojson.simplify(topology, commander[system + "Area"]);
   if (commander.filterAll || commander.filterDetached) {
     var filter = topojson.filterWeight(topology, commander[system + "Area"], topojson[system + "RingArea"]);
-    if (!commander.filterAll) filter = and(topojson.filterAttached(topology), filter);
+    if (!commander.filterAll) filter = or(topojson.filterAttached(topology), filter);
     topojson.filter(topology, filter);
   }
   out.write(JSON.stringify(topology));
   out[out === process.stdout ? "write" : "end"]("\n");
 }
 
-function and(filterA, filterB) {
+function or(filterA, filterB) {
   return function(ring, interior) {
-    return filterA(ring, interior) && filterB(ring, interior);
+    return filterA(ring, interior) || filterB(ring, interior);
   };
 }
 

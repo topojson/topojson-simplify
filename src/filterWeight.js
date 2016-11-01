@@ -1,4 +1,4 @@
-import feature from "topojson-client";
+import {feature} from "topojson-client";
 import {planarRingArea} from "./planar";
 
 export default function(topology, minWeight, weight) {

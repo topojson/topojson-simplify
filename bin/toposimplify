@@ -22,10 +22,10 @@ if (commander.planarArea == null
     && commander.sphericalArea == null
     && commander.sphericalQuantile == null) {
   commander.planarArea = Number.MIN_VALUE;
-} else if (commander.planarArea != null
-    + commander.planarQuantile != null
-    + commander.sphericalArea != null
-    + commander.sphericalQuantile != null > 1) {
+} else if ((commander.planarArea != null)
+    + (commander.planarQuantile != null)
+    + (commander.sphericalArea != null)
+    + (commander.sphericalQuantile != null) > 1) {
   console.error();
   console.error("  error: multiple area thresholds specified");
   console.error();
@@ -42,7 +42,7 @@ out.on("error", function(error) {
   }
 });
 
-read(commander.args[0]).then(write);
+read(commander.args[0]).then(write).catch(abort);
 
 function read(file) {
   return new Promise(function(resolve, reject) {
@@ -64,7 +64,7 @@ function write(topology) {
   topojson.simplify(topology, commander[system + "Area"]);
   if (commander.filterAll || commander.filterDetached) {
     var filter = topojson.filterWeight(topology, commander[system + "Area"], topojson[system + "RingArea"]);
-    if (!commander.filterAll) filter = and(topojson.filterDetached(topology), filter);
+    if (!commander.filterAll) filter = and(topojson.filterAttached(topology), filter);
     topojson.filter(topology, filter);
   }
   out.write(JSON.stringify(topology));
@@ -75,4 +75,8 @@ function and(filterA, filterB) {
   return function(ring, interior) {
     return filterA(ring, interior) && filterB(ring, interior);
   };
+}
+
+function abort(error) {
+  console.error(error.stack);
 }

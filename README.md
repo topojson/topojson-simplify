@@ -13,7 +13,7 @@ If you use NPM, `npm install topojson-simplify`. Otherwise, download the [latest
 
 ```html
 <script src="https://unpkg.com/topojson-client@2"></script>
-<script src="https://unpkg.com/topojson-simplify@0.1"></script>
+<script src="https://unpkg.com/topojson-simplify@2"></script>
 <script>
 
 topojson.presimplify(topology);

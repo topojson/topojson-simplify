@@ -1,6 +1,11 @@
 # TopoJSON Simplify
 
-…
+Topology-preserving simplification and filtering for TopoJSON. Smaller files, faster rendering!
+
+For an introduction to line simplification:
+
+* https://bost.ocks.org/mike/simplify/
+* https://www.jasondavies.com/simplify/
 
 ## Installing
 
@@ -72,4 +77,53 @@ See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for buil
 
 ## Command Line Reference
 
-…
+### toposimplify
+
+<a name="toposimplify" href="#toposimplify">#</a> <b>toposimplify</b> [<i>options…</i>] [<i>file</i>] [<>](https://github.com/topojson/topojson-simplify/blob/master/bin/toposimplify "Source")
+
+… See also [topojson.simplify](#simplify).
+
+<a name="toposimplify_help" href="#toposimplify_help">#</a> toposimplify <b>-h</b>
+<br><a href="#toposimplify_help">#</a> toposimplify <b>--help</b>
+
+Output usage information.
+
+<a name="toposimplify_version" href="#toposimplify_version">#</a> toposimplify <b>-V</b>
+<br><a href="#toposimplify_version">#</a> toposimplify <b>--version</b>
+
+Output the version number.
+
+<a name="toposimplify_out" href="#toposimplify_out">#</a> toposimplify <b>-o</b> <i>file</i>
+<br><a href="#toposimplify_out">#</a> toposimplify <b>--out</b> <i>file</i>
+
+Specify the output TopoJSON file name. Defaults to “-” for stdout.
+
+<a name="toposimplify_planar_area" href="#toposimplify_planar_area">#</a> toposimplify <b>-p</b> <i>value</i>
+<br><a href="#toposimplify_planar_area">#</a> toposimplify <b>--planar-area</b> <i>value</i>
+
+Specify simplification threshold *value* as the minimum planar triangle area, typically in square pixels.
+
+<a name="toposimplify_planar_quantile" href="#toposimplify_planar_quantile">#</a> toposimplify <b>-P</b> <i>value</i>
+<br><a href="#toposimplify_planar_quantile">#</a> toposimplify <b>--planar-quantile</b> <i>value</i>
+
+Specify simplification threshold *value* as the minimum quantile of planar triangle areas. The *value* should be in the range [0, 1].
+
+<a name="toposimplify_spherical_area" href="#toposimplify_spherical_area">#</a> toposimplify <b>-s</b> <i>value</i>
+<br><a href="#toposimplify_spherical_area">#</a> toposimplify <b>--spherical-area</b> <i>value</i>
+
+Specify simplification threshold *value* as the minimum spherical triangle area ([spherical excess](http://mathworld.wolfram.com/SphericalExcess.html)), in [steradians](https://en.wikipedia.org/wiki/Steradian).
+
+<a name="toposimplify_spherical_quantile" href="#toposimplify_spherical_quantile">#</a> toposimplify <b>-S</b> <i>value</i>
+<br><a href="#toposimplify_spherical_quantile">#</a> toposimplify <b>--spherical-quantile</b> <i>value</i>
+
+Specify simplification threshold *value* as the minimum quantile of spherical triangle areas ([spherical excess](http://mathworld.wolfram.com/SphericalExcess.html)). The *value* should be in the range [0, 1].
+
+<a name="toposimplify_filter_detached" href="#toposimplify_filter_detached">#</a> toposimplify <b>-f</b>
+<br><a href="#toposimplify_filter_detached">#</a> toposimplify <b>--filter-detached</b>
+
+Remove detached rings that are smaller than the simplification threshold after simplifying.
+
+<a name="toposimplify_filter_all" href="#toposimplify_filter_all">#</a> toposimplify <b>-F</b>
+<br><a href="#toposimplify_filter_all">#</a> toposimplify <b>--filter-all</b>
+
+Remove any rings that are smaller than the simplification threshold after simplifying.

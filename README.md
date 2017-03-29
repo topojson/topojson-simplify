@@ -29,9 +29,13 @@ topojson.presimplify(topology);
 
 … If *weight* is not specified, it defaults to [planarTriangleArea](#planarTriangleArea).
 
+**CAUTION:** The input *topology* is modified **in-place**.
+
 <a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>])
 
 … The specified *topology* must have previously been passed to [presimplify](#presimplify). If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE).
+
+**CAUTION:** The input *topology* is modified **in-place**.
 
 <a name="quantile" href="#quantile">#</a> topojson.<b>quantile</b>(<i>topology</i>, <i>p</i>)
 
@@ -48,6 +52,8 @@ See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for buil
 <a name="filter" href="#filter">#</a> topojson.<b>filter</b>(<i>topology</i>[, <i>filter</i>])
 
 …
+
+**CAUTION:** The input *topology* is modified **in-place**.
 
 <a name="filterAttached" href="#filterAttached">#</a> topojson.<b>filterAttached</b>(<i>topology</i>)
 

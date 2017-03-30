@@ -35,7 +35,7 @@ export default function(topology, filter) {
 
   function filterRings(arcs) {
     return arcs.length && filterExteriorRing(arcs[0]) // if the exterior is small, ignore any holes
-        ? [arcs.shift()].concat(arcs.filter(filterInteriorRing))
+        ? [arcs[0]].concat(arcs.slice(1).filter(filterInteriorRing))
         : null;
   }
 

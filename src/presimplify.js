@@ -1,25 +1,28 @@
-import {transform, untransform} from "topojson-client";
+import {transform} from "topojson-client";
 import newHeap from "./heap";
 import {planarTriangleArea} from "./planar";
 
+function copy(point) {
+  return [point[0], point[1], 0];
+}
+
 export default function(topology, weight) {
-  var absolute = transform(topology),
-      relative = untransform(topology),
+  var point = topology.transform ? transform(topology.transform) : copy,
       heap = newHeap();
 
   if (weight == null) weight = planarTriangleArea;
 
-  topology.arcs.forEach(function(arc) {
+  var arcs = topology.arcs.map(function(arc) {
     var triangles = [],
         maxWeight = 0,
         triangle,
         i,
         n;
 
-    arc.forEach(absolute);
+    arc = arc.map(point);
 
     for (i = 1, n = arc.length - 1; i < n; ++i) {
-      triangle = arc.slice(i - 1, i + 2);
+      triangle = [arc[i - 1], arc[i], arc[i + 1]];
       triangle[1][2] = weight(triangle);
       triangles.push(triangle);
       heap.push(triangle);
@@ -58,7 +61,7 @@ export default function(topology, weight) {
       }
     }
 
-    arc.forEach(relative);
+    return arc;
   });
 
   function update(triangle) {
@@ -67,5 +70,10 @@ export default function(topology, weight) {
     heap.push(triangle);
   }
 
-  return topology;
+  return {
+    type: "Topology",
+    bbox: topology.bbox,
+    objects: topology.objects,
+    arcs: arcs
+  };
 }

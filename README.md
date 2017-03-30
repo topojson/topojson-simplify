@@ -12,8 +12,8 @@ For an introduction to line simplification:
 If you use NPM, `npm install topojson-simplify`. Otherwise, download the [latest release](https://github.com/topojson/topojson-simplify/releases/latest). You can also load directly from [unpkg](https://unpkg.com). AMD, CommonJS, and vanilla environments are supported. In vanilla, a `topojson` global is exported:
 
 ```html
-<script src="https://unpkg.com/topojson-client@2"></script>
-<script src="https://unpkg.com/topojson-simplify@2"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+<script src="https://unpkg.com/topojson-simplify@3"></script>
 <script>
 
 topojson.presimplify(topology);
@@ -27,27 +27,17 @@ topojson.presimplify(topology);
 
 <a name="presimplify" href="#presimplify">#</a> topojson.<b>presimplify</b>(<i>topology</i>[, <i>weight</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/presimplify.js "Source")
 
-… If *weight* is not specified, it defaults to [planarTriangleArea](#planarTriangleArea).
+Returns a shallow copy of the specified *topology* where each coordinate of each arc is assigned a weight according to the specified *weight* function. If *weight* is not specified, it defaults to [planarTriangleArea](#planarTriangleArea). The returned presimplified topology can then be passed to [simplify](#simplify) to remove coordinates below a desired weight threshold.
 
-**CAUTION:** The input *topology* is modified **in-place**.
+<a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
 
-<a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
-
-… The specified *topology* must have previously been passed to [presimplify](#presimplify). If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE).
-
-**CAUTION:** The input *topology* is modified **in-place**.
+Returns a shallow copy of the specified [presimplified](#presimplify) *topology*, where every arc coordinate whose weight is lower than *minWeight* is removed. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). See also [toposimplify](#toposimplify).
 
 <a name="quantile" href="#quantile">#</a> topojson.<b>quantile</b>(<i>topology</i>, <i>p</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/quantile.js "Source")
 
-… Returns the *p*-quantile of the weighted points in the given *topology*, where *p* is a number in the range [0, 1]. This value is then typically passed to [simplify](#simplify) as the *minWeight*. For example, the median weight can be computed using *p* = 0.5, the first quartile at *p* = 0.25, and the third quartile at *p* = 0.75. This particular implementation uses the [R-7 method](https://en.wikipedia.org/wiki/Quantile#Quantiles_of_a_population), which is the default for the R programming language and Excel. The specified *topology* must have previously been passed to [presimplify](#presimplify).
+Returns the *p*-quantile of the weighted points in the given [presimplified](#presimplify) *topology*, where *p* is a number in the range [0, 1]. The quantile value is then typically passed as the *minWeight* to [simplify](#simplify). For example, the median weight can be computed using *p* = 0.5, the first quartile at *p* = 0.25, and the third quartile at *p* = 0.75. This implementation uses the [R-7 method](https://en.wikipedia.org/wiki/Quantile#Quantiles_of_a_population), which is the default for the R programming language and Excel.
 
 ### Filtering
-
-<a name="_filter" href="#_filter">#</a> <i>filter</i>(<i>ring</i>, <i>interior</i>)
-
-To filter a topology, you supply a *filter* function to [filter](#filter). The *filter* function is invoked for each ring in the input topology, being passed two arguments: the *ring*, specified as an array of points where each point is a two-element array of numbers, and the *interior* flag. If *interior* is false, the given *ring* is the exterior ring of a polygon; if *interior* is true, the given *ring* is an interior ring (a hole). The *filter* function must then return true if the ring should be preserved, or false if the ring should be removed.
-
-See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
 
 <a name="filter" href="#filter">#</a> topojson.<b>filter</b>(<i>topology</i>[, <i>filter</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filter.js "Source")
 
@@ -62,6 +52,12 @@ See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for buil
 <a name="filterWeight" href="#filterWeight">#</a> topojson.<b>filterWeight</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterWeight.js "Source")
 
 … If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). If *weight* is not specified, it defaults to [planarRingArea](#planarRingArea).
+
+<a name="_filter" href="#_filter">#</a> <i>filter</i>(<i>ring</i>, <i>interior</i>)
+
+To filter a topology, you supply a *filter* function to [filter](#filter). The *filter* function is invoked for each ring in the input topology, being passed two arguments: the *ring*, specified as an array of points where each point is a two-element array of numbers, and the *interior* flag. If *interior* is false, the given *ring* is the exterior ring of a polygon; if *interior* is true, the given *ring* is an interior ring (a hole). The *filter* function must then return true if the ring should be preserved, or false if the ring should be removed.
+
+See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
 
 ### Geometry
 

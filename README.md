@@ -33,7 +33,7 @@ The returned presimplified topology can be passed to [simplify](#simplify) to re
 
 <a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
 
-Returns a shallow copy of the specified *topology* where every arc coordinate whose *z*-value is lower than *minWeight* is removed; only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). This method has no effect on Point and MultiPoint geometries.
+Returns a shallow copy of the specified *topology* where every arc coordinate whose *z*-value is lower than *minWeight* is removed. Only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). This method has no effect on Point and MultiPoint geometries.
 
 See [presimplify](#presimplify) to assign *z*-value for each coordinate. See also [toposimplify](#toposimplify).
 
@@ -45,8 +45,7 @@ Returns the *p*-quantile of the weighted points in the given [presimplified](#pr
 
 <a name="filter" href="#filter">#</a> topojson.<b>filter</b>(<i>topology</i>[, <i>filter</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filter.js "Source")
 
-Returns a shallow copy of the specified *topology*, removing any rings that fail the specified [*filter* function](#_filter).
-See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
+Returns a shallow copy of the specified *topology*, removing any rings that fail the specified [*filter* function](#_filter). See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
 
 If a resulting Polygon geometry object has no rings, it is replaced with a null geometry; likewise, empty polygons are removed from MultiPolygon geometry objects, and if the resulting MultiPolygon geometry object has no polygons, it is replaced with a null geometry; likewise, any null geometry objects are removed from GeometryCollection objects, and if the resulting GeometryCollection is empty, it is replaced with a null geometry.
 
@@ -55,6 +54,10 @@ After any geometry objects are removed from the *topology*, the resulting topolo
 <a name="filterAttached" href="#filterAttached">#</a> topojson.<b>filterAttached</b>(<i>topology</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterAttached.js "Source")
 
 Returns a [ring *filter* function](#_filter) that returns true if the specified *ring* shares an arc with any other object in the *topology*. This filter is often used in conjunction with [filterWeight](#filterWeight) to preserve small features that are adjacent to other features.
+
+<a name="filterSome" href="#filterSome">#</a> topojson.<b>filterSome</b>(<i>filters…</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterSome.js "Source")
+
+Returns a [ring *filter* function](#_filter) that returns true if at least one of the specified *filters* return true.
 
 <a name="filterWeight" href="#filterWeight">#</a> topojson.<b>filterWeight</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterWeight.js "Source")
 
@@ -90,7 +93,7 @@ Returns the [spherical excess](http://mathworld.wolfram.com/SphericalExcess.html
 
 <a name="toposimplify" href="#toposimplify">#</a> <b>toposimplify</b> [<i>options…</i>] [<i>file</i>] [<>](https://github.com/topojson/topojson-simplify/blob/master/bin/toposimplify "Source")
 
-… See also [topojson.simplify](#simplify).
+Given an input *topology*, assigns a *z*-value to every arc coordinate according to a configurable *weight* function, and then generates an output *topology* where every arc coordinate whose *z*-value is lower than a configurable minimum weight is removed. Only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. See also [presimplify](#presimplify), [simplify](#simplify) and [filter](#filter).
 
 <a name="toposimplify_help" href="#toposimplify_help">#</a> toposimplify <b>-h</b>
 <br><a href="#toposimplify_help">#</a> toposimplify <b>--help</b>
@@ -130,9 +133,9 @@ Specify simplification threshold *value* as the minimum quantile of spherical tr
 <a name="toposimplify_filter_detached" href="#toposimplify_filter_detached">#</a> toposimplify <b>-f</b>
 <br><a href="#toposimplify_filter_detached">#</a> toposimplify <b>--filter-detached</b>
 
-Remove detached rings that are smaller than the simplification threshold after simplifying.
+Remove detached rings that are smaller than the simplification threshold after simplifying. See [filterAttached](#filterAttached).
 
 <a name="toposimplify_filter_all" href="#toposimplify_filter_all">#</a> toposimplify <b>-F</b>
 <br><a href="#toposimplify_filter_all">#</a> toposimplify <b>--filter-all</b>
 
-Remove any rings that are smaller than the simplification threshold after simplifying.
+Remove any rings that are smaller than the simplification threshold after simplifying. See [filterWeight](#filterWeight).

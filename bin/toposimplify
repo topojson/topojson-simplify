@@ -63,11 +63,11 @@ function write(topology) {
     console.warn("equivalent --" + system + "-area " + commander[system + "Area"]);
   }
   topology = topojson.simplify(topology, commander[system + "Area"]);
-  // if (commander.filterAll || commander.filterDetached) {
-  //   var filter = topojson.filterWeight(topology, commander[system + "Area"], topojson[system + "RingArea"]);
-  //   if (!commander.filterAll) filter = or(topojson.filterAttached(topology), filter);
-  //   topojson.filter(topology, filter);
-  // }
+  if (commander.filterAll || commander.filterDetached) {
+    var filter = topojson.filterWeight(topology, commander[system + "Area"], topojson[system + "RingArea"]);
+    if (!commander.filterAll) filter = or(topojson.filterAttached(topology), filter);
+    topology = topojson.filter(topology, filter);
+  }
   if (transform) topology = topojson.quantize(topology, transform);
   out.write(JSON.stringify(topology));
   out[out === process.stdout ? "write" : "end"]("\n");

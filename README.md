@@ -47,8 +47,6 @@ Returns the *p*-quantile of the weighted points in the given [presimplified](#pr
 
 …
 
-**CAUTION:** The input *topology* is modified **in-place**.
-
 <a name="filterAttached" href="#filterAttached">#</a> topojson.<b>filterAttached</b>(<i>topology</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterAttached.js "Source")
 
 …

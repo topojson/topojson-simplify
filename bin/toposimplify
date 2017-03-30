@@ -64,9 +64,7 @@ function write(topology) {
   }
   topology = topojson.simplify(topology, commander[system + "Area"]);
   if (commander.filterAll || commander.filterDetached) {
-    var filter = topojson.filterWeight(topology, commander[system + "Area"], topojson[system + "RingArea"]);
-    if (!commander.filterAll) filter = topojson.filterSome([topojson.filterAttached(topology), filter]);
-    topology = topojson.filter(topology, filter);
+    topology = topojson.filter(topology, (commander.filterAll ? topojson.filterWeight : topojson.filterAttachedWeight)(topology, commander[system + "Area"], topojson[system + "RingArea"]));
   }
   if (transform) topology = topojson.quantize(topology, transform);
   out.write(JSON.stringify(topology));

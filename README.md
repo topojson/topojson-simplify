@@ -53,15 +53,15 @@ After any geometry objects are removed from the *topology*, the resulting topolo
 
 <a name="filterAttached" href="#filterAttached">#</a> topojson.<b>filterAttached</b>(<i>topology</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterAttached.js "Source")
 
-Returns a [ring *filter* function](#_filter) that returns true if the specified *ring* shares an arc with any other object in the *topology*. This filter is often used in conjunction with [filterWeight](#filterWeight) to preserve small features that are adjacent to other features.
+Returns a [ring *filter* function](#_filter) that returns true if the specified *ring* shares an arc with any other object in the *topology*.
 
-<a name="filterSome" href="#filterSome">#</a> topojson.<b>filterSome</b>(<i>filters…</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterSome.js "Source")
+<a name="filterAttachedWeight" href="#filterAttachedWeight">#</a> topojson.<b>filterAttachedWeight</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterAttachedWeight.js "Source")
 
-Returns a [ring *filter* function](#_filter) that returns true if at least one of the specified *filters* return true.
+Returns a [ring *filter* function](#_filter) that returns true if the weight of the specified *ring* is greater than or equal to the specified *minWeight* threshold or the specified *ring* shares an arc with any other object in the *topology*.
 
 <a name="filterWeight" href="#filterWeight">#</a> topojson.<b>filterWeight</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterWeight.js "Source")
 
-Returns a [ring *filter* function](#_filter) that returns true if the weight of the specified *ring* is greater than or equal to the specified *minWeight* threshold. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). If *weight* is not specified, it defaults to [planarRingArea](#planarRingArea). This filter is often used in conjunction with [filterAttached](#filterAttached) to preserve small features that are adjacent to other features.
+Returns a [ring *filter* function](#_filter) that returns true if the weight of the specified *ring* is greater than or equal to the specified *minWeight* threshold. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). If *weight* is not specified, it defaults to [planarRingArea](#planarRingArea).
 
 <a name="_filter" href="#_filter">#</a> <i>filter</i>(<i>ring</i>, <i>interior</i>)
 

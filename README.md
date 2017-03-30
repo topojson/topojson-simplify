@@ -33,7 +33,7 @@ The returned presimplified topology can be passed to [simplify](#simplify) to re
 
 <a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
 
-Returns a shallow copy of the specified *topology*, where every arc coordinate whose *z*-value is lower than *minWeight* is removed; only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). This method has no effect on Point and MultiPoint geometries.
+Returns a shallow copy of the specified *topology* where every arc coordinate whose *z*-value is lower than *minWeight* is removed; only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). This method has no effect on Point and MultiPoint geometries.
 
 See [presimplify](#presimplify) to assign *z*-value for each coordinate. See also [toposimplify](#toposimplify).
 
@@ -45,39 +45,44 @@ Returns the *p*-quantile of the weighted points in the given [presimplified](#pr
 
 <a name="filter" href="#filter">#</a> topojson.<b>filter</b>(<i>topology</i>[, <i>filter</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filter.js "Source")
 
-…
+Returns a shallow copy of the specified *topology*, removing any rings that fail the specified [*filter* function](#_filter).
+See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
+
+If a resulting Polygon geometry object has no rings, it is replaced with a null geometry; likewise, empty polygons are removed from MultiPolygon geometry objects, and if the resulting MultiPolygon geometry object has no polygons, it is replaced with a null geometry; likewise, any null geometry objects are removed from GeometryCollection objects, and if the resulting GeometryCollection is empty, it is replaced with a null geometry.
+
+After any geometry objects are removed from the *topology*, the resulting topology is pruned, removing any unused arcs. As a result, this operation typically changes the arc indexes of the topology.
 
 <a name="filterAttached" href="#filterAttached">#</a> topojson.<b>filterAttached</b>(<i>topology</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterAttached.js "Source")
 
-…
+Returns a [ring *filter* function](#_filter) that returns true if the specified *ring* shares an arc with any other object in the *topology*. This filter is often used in conjunction with [filterWeight](#filterWeight) to preserve small features that are adjacent to other features.
 
 <a name="filterWeight" href="#filterWeight">#</a> topojson.<b>filterWeight</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/filterWeight.js "Source")
 
-… If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). If *weight* is not specified, it defaults to [planarRingArea](#planarRingArea).
+Returns a [ring *filter* function](#_filter) that returns true if the weight of the specified *ring* is greater than or equal to the specified *minWeight* threshold. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). If *weight* is not specified, it defaults to [planarRingArea](#planarRingArea). This filter is often used in conjunction with [filterAttached](#filterAttached) to preserve small features that are adjacent to other features.
 
 <a name="_filter" href="#_filter">#</a> <i>filter</i>(<i>ring</i>, <i>interior</i>)
 
-To filter a topology, you supply a *filter* function to [filter](#filter). The *filter* function is invoked for each ring in the input topology, being passed two arguments: the *ring*, specified as an array of points where each point is a two-element array of numbers, and the *interior* flag. If *interior* is false, the given *ring* is the exterior ring of a polygon; if *interior* is true, the given *ring* is an interior ring (a hole). The *filter* function must then return true if the ring should be preserved, or false if the ring should be removed.
-
-See [filterAttached](#filterAttached) and [filterWeight](#filterWeight) for built-in filter implementations.
+To filter a topology, you supply a ring *filter* function to [filter](#filter). The *filter* function is invoked for each ring in the input topology, being passed two arguments: the *ring*, specified as an array of points where each point is a two-element array of numbers, and the *interior* flag. If *interior* is false, the given *ring* is the exterior ring of a polygon; if *interior* is true, the given *ring* is an interior ring (a hole). The *filter* function must then return true if the ring should be preserved, or false if the ring should be removed.
 
 ### Geometry
 
-<a name="planarRingArea" href="#planarRingArea">#</a> topojson.<b>planarRingArea</b>(<i>ring</i>, <i>interior</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/planar.js#L6 "Source")
+<a name="planarRingArea" href="#planarRingArea">#</a> topojson.<b>planarRingArea</b>(<i>ring</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/planar.js#L6 "Source")
 
-…
+Returns the [planar area](http://mathworld.wolfram.com/PolygonArea.html) of the specified *ring*, which is an array of points \[\[*x*₀, *y*₀\], \[*x*₁, *y*₁\], …\]. The first point must be equal to the last point. This implementation is agnostic to winding order; the returned value is always non-negative.
 
 <a name="planarTriangleArea" href="#planarTriangleArea">#</a> topojson.<b>planarTriangleArea</b>(<i>triangle</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/planar.js#L1 "Source")
 
-…
+Returns the [planar area](http://mathworld.wolfram.com/TriangleArea.html) of the specified *triangle*, which is an array of three points \[\[*x*₀, *y*₀\], \[*x*₁, *y*₁\], \[*x*₂, *y*₂\]\]. This implementation is agnostic to winding order; the returned value is always non-negative.
 
 <a name="sphericalRingArea" href="#sphericalRingArea">#</a> topojson.<b>sphericalRingArea</b>(<i>ring</i>, <i>interior</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/spherical.js#L14 "Source")
 
-…
+Returns the [spherical area](https://en.wikipedia.org/wiki/Spherical_trigonometry#Area_and_spherical_excess) of the specified *ring*, which is an array of points \[\[*x*₀, *y*₀\], \[*x*₁, *y*₁\], …\] where *x* and *y* represent longitude and latitude in degrees, respectively. The first point must be equal to the last point.
+
+This implementation uses [d3-geo](https://github.com/d3/d3-geo)’s [winding order convention](https://bl.ocks.org/mbostock/a7bdfeb041e850799a8d3dce4d8c50c8) to determine which side of the polygon is the inside: polygons smaller than a hemisphere must be clockwise, while polygons [larger than a hemisphere](https://bl.ocks.org/mbostock/6713736) must be anticlockwise. If *interior* is true, the opposite winding order is used. This winding order convention is also used by [ESRI shapefiles](https://github.com/mbostock/shapefile); however, it is the **opposite** convention of GeoJSON’s [RFC 7946](https://tools.ietf.org/html/rfc7946#section-3.1.6).
 
 <a name="sphericalTriangleArea" href="#sphericalTriangleArea">#</a> topojson.<b>sphericalTriangleArea</b>(<i>triangle</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/spherical.js#L43 "Source")
 
-…
+Returns the [spherical excess](http://mathworld.wolfram.com/SphericalExcess.html) of the specified *triangle*, which is an array of three points \[\[*x*₀, *y*₀\], \[*x*₁, *y*₁\], \[*x*₂, *y*₂\]\] where *x* and *y* represent longitude and latitude in degrees, respectively. This implementation uses the same winding order convention as [sphericalRingArea](#sphericalRingArea).
 
 ## Command Line Reference
 

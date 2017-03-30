@@ -27,11 +27,15 @@ topojson.presimplify(topology);
 
 <a name="presimplify" href="#presimplify">#</a> topojson.<b>presimplify</b>(<i>topology</i>[, <i>weight</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/presimplify.js "Source")
 
-Returns a shallow copy of the specified *topology* where each coordinate of each arc is assigned a weight according to the specified *weight* function. If *weight* is not specified, it defaults to [planarTriangleArea](#planarTriangleArea). The returned presimplified topology can then be passed to [simplify](#simplify) to remove coordinates below a desired weight threshold.
+Returns a shallow copy of the specified *topology* where each coordinate of each arc is assigned a *z*-value according to the specified *weight* function. If *weight* is not specified, it defaults to [planarTriangleArea](#planarTriangleArea). If the input *topology* is delta-encoded (that is, if a *topology*.transform is present), this transform is removed in the returned output topology.
+
+The returned presimplified topology can be passed to [simplify](#simplify) to remove coordinates below a desired weight threshold.
 
 <a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
 
-Returns a shallow copy of the specified [presimplified](#presimplify) *topology*, where every arc coordinate whose weight is lower than *minWeight* is removed. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). See also [toposimplify](#toposimplify).
+Returns a shallow copy of the specified *topology*, where every arc coordinate whose *z*-value is lower than *minWeight* is removed; only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). This method has no effect on Point and MultiPoint geometries.
+
+See [presimplify](#presimplify) to assign *z*-value for each coordinate. See also [toposimplify](#toposimplify).
 
 <a name="quantile" href="#quantile">#</a> topojson.<b>quantile</b>(<i>topology</i>, <i>p</i>) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/quantile.js "Source")
 

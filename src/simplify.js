@@ -21,6 +21,7 @@ export default function(topology, minWeight) {
 
   return {
     type: "Topology",
+    transform: topology.transform,
     bbox: topology.bbox,
     objects: topology.objects,
     arcs: arcs

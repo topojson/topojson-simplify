@@ -3,7 +3,7 @@
 var fs = require("fs"),
     path = require("path"),
     commander = require("commander"),
-    topojson = require("../");
+    topojson = Object.assign(require("../"), require("topojson-client"));
 
 commander
     .version(require("../package.json").version)
@@ -55,26 +55,20 @@ function read(file) {
 }
 
 function write(topology) {
-  var system = commander.sphericalArea != null || commander.sphericalQuantile != null ? "spherical" : "planar";
-  topojson.presimplify(topology, topojson[system + "TriangleArea"]);
+  var system = commander.sphericalArea != null || commander.sphericalQuantile != null ? "spherical" : "planar",
+      transform = topology.transform;
+  topology = topojson.presimplify(topology, topojson[system + "TriangleArea"]);
   if (commander[system + "Quantile"] != null) {
     commander[system + "Area"] = topojson.quantile(topology, +commander[system + "Quantile"]);
     console.warn("equivalent --" + system + "-area " + commander[system + "Area"]);
   }
-  topojson.simplify(topology, commander[system + "Area"]);
+  topology = topojson.simplify(topology, commander[system + "Area"]);
   if (commander.filterAll || commander.filterDetached) {
-    var filter = topojson.filterWeight(topology, commander[system + "Area"], topojson[system + "RingArea"]);
-    if (!commander.filterAll) filter = or(topojson.filterAttached(topology), filter);
-    topojson.filter(topology, filter);
+    topology = topojson.filter(topology, (commander.filterAll ? topojson.filterWeight : topojson.filterAttachedWeight)(topology, commander[system + "Area"], topojson[system + "RingArea"]));
   }
+  if (transform) topology = topojson.quantize(topology, transform);
   out.write(JSON.stringify(topology));
   out[out === process.stdout ? "write" : "end"]("\n");
-}
-
-function or(filterA, filterB) {
-  return function(ring, interior) {
-    return filterA(ring, interior) || filterB(ring, interior);
-  };
 }
 
 function abort(error) {

@@ -1,34 +1,41 @@
 import prune from "./prune";
 
 export default function(topology, filter) {
-  var name;
+  var oldObjects = topology.objects,
+      newObjects = {},
+      key;
 
   if (filter == null) filter = filterTrue;
 
-  function filterGeometry(o) {
-    switch (o.type) {
+  function filterGeometry(input) {
+    var output, arcs;
+    switch (input.type) {
       case "Polygon": {
-        o.arcs = filterRings(o.arcs);
-        if (!o.arcs) o.type = null, delete o.arcs;
+        arcs = filterRings(input.arcs);
+        output = arcs ? {type: "Polygon", arcs: arcs} : {type: null};
         break;
       }
       case "MultiPolygon": {
-        o.arcs = o.arcs.map(filterRings).filter(filterIdentity);
-        if (!o.arcs.length) o.type = null, delete o.arcs;
+        arcs = input.arcs.map(filterRings).filter(filterIdentity);
+        output = arcs.length ? {type: "MultiPolygon", arcs: arcs} : {type: null};
         break;
       }
       case "GeometryCollection": {
-        o.geometries.forEach(filterGeometry);
-        o.geometries = o.geometries.filter(filterNotNull);
-        if (!o.geometries.length) o.type = null, delete o.geometries;
+        arcs = input.geometries.map(filterGeometry).filter(filterNotNull);
+        output = arcs.length ? {type: "GeometryCollection", geometries: arcs} : {type: null};
         break;
       }
+      default: return input;
     }
+    if (input.id != null) output.id = input.id;
+    if (input.bbox != null) output.bbox = input.bbox;
+    if (input.properties != null) output.properties = input.properties;
+    return output;
   }
 
   function filterRings(arcs) {
     return arcs.length && filterExteriorRing(arcs[0]) // if the exterior is small, ignore any holes
-        ? [arcs.shift()].concat(arcs.filter(filterInteriorRing))
+        ? [arcs[0]].concat(arcs.slice(1).filter(filterInteriorRing))
         : null;
   }
 
@@ -40,11 +47,17 @@ export default function(topology, filter) {
     return filter(ring, true);
   }
 
-  for (name in topology.objects) {
-    filterGeometry(topology.objects[name]);
+  for (key in oldObjects) {
+    newObjects[key] = filterGeometry(oldObjects[key]);
   }
 
-  return prune(topology);
+  return prune({
+    type: "Topology",
+    bbox: topology.bbox,
+    transform: topology.transform,
+    objects: newObjects,
+    arcs: topology.arcs
+  });
 }
 
 function filterTrue() {

@@ -30,12 +30,12 @@
   },
   "dependencies": {
     "commander": "2",
-    "topojson-client": "2"
+    "topojson-client": "3"
   },
   "devDependencies": {
     "eslint": "3",
     "package-preamble": "0.0",
-    "rollup": "0.36",
+    "rollup": "0.41",
     "tape": "4",
     "uglify-js": "2"
   }

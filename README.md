@@ -16,7 +16,7 @@ If you use NPM, `npm install topojson-simplify`. Otherwise, download the [latest
 <script src="https://unpkg.com/topojson-simplify@3"></script>
 <script>
 
-topojson.presimplify(topology);
+topology = topojson.presimplify(topology);
 
 </script>
 ```

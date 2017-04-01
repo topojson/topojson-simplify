@@ -1,7 +1,7 @@
 export default function(topology) {
-  var uniqueRingByArc = {}, // arc index -> index of unique associated ring, or -1 if used by multiple rings
-      ringIndex = 0,
-      name;
+  var ownerByArc = new Array(topology.arcs.length), // arc index -> index of unique associated ring, or -1 if used by multiple rings
+      ownerIndex = 0,
+      key;
 
   function testGeometry(o) {
     switch (o.type) {
@@ -12,24 +12,24 @@ export default function(topology) {
   }
 
   function testArcs(arcs) {
-    for (var i = 0, n = arcs.length; i < n; ++i, ++ringIndex) {
+    for (var i = 0, n = arcs.length; i < n; ++i, ++ownerIndex) {
       for (var ring = arcs[i], j = 0, m = ring.length; j < m; ++j) {
         var arc = ring[j];
         if (arc < 0) arc = ~arc;
-        var uniqueRing = uniqueRingByArc[arc];
-        if (uniqueRing >= 0 && uniqueRing !== ringIndex) uniqueRingByArc[arc] = -1;
-        else uniqueRingByArc[arc] = ringIndex;
+        var owner = ownerByArc[arc];
+        if (owner == null) ownerByArc[arc] = ownerIndex;
+        else if (owner !== ownerIndex) ownerByArc[arc] = -1;
       }
     }
   }
 
-  for (name in topology.objects) {
-    testGeometry(topology.objects[name]);
+  for (key in topology.objects) {
+    testGeometry(topology.objects[key]);
   }
 
   return function(ring) {
     for (var j = 0, m = ring.length, arc; j < m; ++j) {
-      if (arc = ring[j], uniqueRingByArc[arc < 0 ? ~arc : arc] < 0) {
+      if (ownerByArc[(arc = ring[j]) < 0 ? ~arc : arc] === -1) {
         return true;
       }
     }

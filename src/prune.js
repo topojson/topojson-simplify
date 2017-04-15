@@ -2,19 +2,45 @@ export default function(topology) {
   var oldObjects = topology.objects,
       newObjects = {},
       oldArcs = topology.arcs,
-      newArcs = [],
-      newArcIndex = -1,
-      newIndexByOldIndex = new Array(oldArcs.length),
+      oldArcsLength = oldArcs.length,
+      oldIndex = -1,
+      newIndexByOldIndex = new Array(oldArcsLength),
+      newArcsLength = 0,
+      newArcs,
+      newIndex = -1,
       key;
 
-  function pruneGeometry(input) {
+  function scanGeometry(input) {
+    switch (input.type) {
+      case "GeometryCollection": input.geometries.forEach(scanGeometry); break;
+      case "LineString": scanArcs(input.arcs); break;
+      case "MultiLineString": input.arcs.forEach(scanArcs); break;
+      case "Polygon": input.arcs.forEach(scanArcs); break;
+      case "MultiPolygon": input.arcs.forEach(scanMultiArcs); break;
+    }
+  }
+
+  function scanArc(index) {
+    if (index < 0) index = ~index;
+    if (!newIndexByOldIndex[index]) newIndexByOldIndex[index] = 1, ++newArcsLength;
+  }
+
+  function scanArcs(arcs) {
+    arcs.forEach(scanArc);
+  }
+
+  function scanMultiArcs(arcs) {
+    arcs.forEach(scanArcs);
+  }
+
+  function reindexGeometry(input) {
     var output;
     switch (input.type) {
-      case "GeometryCollection": output = {type: "GeometryCollection", geometries: input.geometries.map(pruneGeometry)}; break;
-      case "LineString": output = {type: "LineString", arcs: pruneArcs(input.arcs)}; break;
-      case "MultiLineString": output = {type: "MultiLineString", arcs: input.arcs.map(pruneArcs)}; break;
-      case "Polygon": output = {type: "Polygon", arcs: input.arcs.map(pruneArcs)}; break;
-      case "MultiPolygon": output = {type: "MultiPolygon", arcs: input.arcs.map(pruneMultiArcs)}; break;
+      case "GeometryCollection": output = {type: "GeometryCollection", geometries: input.geometries.map(reindexGeometry)}; break;
+      case "LineString": output = {type: "LineString", arcs: reindexArcs(input.arcs)}; break;
+      case "MultiLineString": output = {type: "MultiLineString", arcs: input.arcs.map(reindexArcs)}; break;
+      case "Polygon": output = {type: "Polygon", arcs: input.arcs.map(reindexArcs)}; break;
+      case "MultiPolygon": output = {type: "MultiPolygon", arcs: input.arcs.map(reindexMultiArcs)}; break;
       default: return input;
     }
     if (input.id != null) output.id = input.id;
@@ -23,28 +49,33 @@ export default function(topology) {
     return output;
   }
 
-  function pruneArc(oldIndex) {
-    var oldReverse = oldIndex < 0 && (oldIndex = ~oldIndex, true), newIndex;
-
-    // If this is the first instance of this arc, record it under its new index.
-    if ((newIndex = newIndexByOldIndex[oldIndex]) == null) {
-      newIndexByOldIndex[oldIndex] = newIndex = ++newArcIndex;
-      newArcs[newIndex] = oldArcs[oldIndex];
-    }
-
-    return oldReverse ? ~newIndex : newIndex;
+  function reindexArc(oldIndex) {
+    return oldIndex < 0 ? ~newIndexByOldIndex[~oldIndex] : newIndexByOldIndex[oldIndex];
   }
 
-  function pruneArcs(arcs) {
-    return arcs.map(pruneArc);
+  function reindexArcs(arcs) {
+    return arcs.map(reindexArc);
   }
 
-  function pruneMultiArcs(arcs) {
-    return arcs.map(pruneArcs);
+  function reindexMultiArcs(arcs) {
+    return arcs.map(reindexArcs);
   }
 
   for (key in oldObjects) {
-    newObjects[key] = pruneGeometry(oldObjects[key]);
+    scanGeometry(oldObjects[key]);
+  }
+
+  newArcs = new Array(newArcsLength);
+
+  while (++oldIndex < oldArcsLength) {
+    if (newIndexByOldIndex[oldIndex]) {
+      newIndexByOldIndex[oldIndex] = ++newIndex;
+      newArcs[newIndex] = oldArcs[oldIndex];
+    }
+  }
+
+  for (key in oldObjects) {
+    newObjects[key] = reindexGeometry(oldObjects[key]);
   }
 
   return {

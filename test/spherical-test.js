@@ -30,7 +30,7 @@ tape("topojson.sphericalTriangleArea(triangle) returns the area of the specified
 });
 
 tape("topojson.sphericalTriangleArea(triangle) does care about winding order", function(test) {
-  test.inDelta(topojson.sphericalTriangleArea([[0, 0], [0.1, 0], [0, 0.1]]), 12.5663690912713);
-  test.inDelta(topojson.sphericalTriangleArea([[0, 0], [90, 0], [0, 90]]), 4 * Math.PI - Math.PI / 2);
+  test.inDelta(topojson.sphericalTriangleArea([[0, 0], [0.1, 0], [0, 0.1]]), 0.000001523087872198469);
+  test.inDelta(topojson.sphericalTriangleArea([[0, 0], [90, 0], [0, 90]]), Math.PI / 2);
   test.end();
 });

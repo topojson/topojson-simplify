@@ -2,6 +2,7 @@ var pi = Math.PI,
     tau = 2 * pi,
     quarterPi = pi / 4,
     radians = pi / 180,
+    abs = Math.abs,
     atan2 = Math.atan2,
     cos = Math.cos,
     sin = Math.sin;
@@ -46,6 +47,5 @@ export function sphericalRingArea(ring, interior) {
 }
 
 export function sphericalTriangleArea(t) {
-  var sum = halfArea(t, false);
-  return (sum < 0 ? tau + sum : sum) * 2;
+  return abs(halfArea(t, false)) * 2;
 }

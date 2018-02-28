@@ -31,7 +31,7 @@ Returns a shallow copy of the specified *topology* where each coordinate of each
 
 The returned presimplified topology can be passed to [simplify](#simplify) to remove coordinates below a desired weight threshold.
 
-<a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>[, <i>weight</i>]]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
+<a name="simplify" href="#simplify">#</a> topojson.<b>simplify</b>(<i>topology</i>[, <i>minWeight</i>]) [<>](https://github.com/topojson/topojson-simplify/blob/master/src/simplify.js "Source")
 
 Returns a shallow copy of the specified *topology* where every arc coordinate whose *z*-value is lower than *minWeight* is removed. Only the *x* and *y* dimensions of the coordinates are preserved in the returned topology. If *minWeight* is not specified, it defaults to [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE). This method has no effect on Point and MultiPoint geometries.
 

@@ -1,6 +1,6 @@
 import {transform} from "topojson-client";
-import newHeap from "./heap";
-import {planarTriangleArea} from "./planar";
+import newHeap from "./heap.js";
+import {planarTriangleArea} from "./planar.js";
 
 function copy(point) {
   return [point[0], point[1], 0];

@@ -1,4 +1,4 @@
-import prune from "./prune";
+import prune from "./prune.js";
 
 export default function(topology, filter) {
   var oldObjects = topology.objects,

@@ -1,5 +1,5 @@
-import filterAttached from "./filterAttached";
-import filterWeight from "./filterWeight";
+import filterAttached from "./filterAttached.js";
+import filterWeight from "./filterWeight.js";
 
 export default function(topology, minWeight, weight) {
   var a = filterAttached(topology),

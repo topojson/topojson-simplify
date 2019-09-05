@@ -1,5 +1,5 @@
 import {feature} from "topojson-client";
-import {planarRingArea} from "./planar";
+import {planarRingArea} from "./planar.js";
 
 export default function(topology, minWeight, weight) {
   minWeight = minWeight == null ? Number.MIN_VALUE : +minWeight;

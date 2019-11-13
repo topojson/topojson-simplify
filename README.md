@@ -1,3 +1,5 @@
+<a href="https://www.npmjs.com/package/topojson-simplify"><img alt="npm version" src="https://img.shields.io/npm/v/topojson-simplify.svg" /></a>
+
 # TopoJSON Simplify
 
 Topology-preserving simplification and filtering for TopoJSON. Smaller files, faster rendering!

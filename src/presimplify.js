@@ -64,10 +64,28 @@ export default function(topology, weight) {
     return arc;
   });
 
+  for (const key in topology.objects) {
+    topology.objects[key] = unquantizeGeometry(topology.objects[key]);
+  }
+
   function update(triangle) {
     heap.remove(triangle);
     triangle[1][2] = weight(triangle);
     heap.push(triangle);
+  }
+
+  function unquantizeGeometry(input) {
+    var output;
+    switch (input.type) {
+      case "GeometryCollection": output = {type: "GeometryCollection", geometries: input.geometries.map(unquantizeGeometry)}; break;
+      case "Point": output = {type: "Point", coordinates: point(input.coordinates)}; break;
+      case "MultiPoint": output = {type: "MultiPoint", coordinates: input.coordinates.map(point)}; break;
+      default: return input;
+    }
+    if (input.id != null) output.id = input.id;
+    if (input.bbox != null) output.bbox = input.bbox;
+    if (input.properties != null) output.properties = input.properties;
+    return output;
   }
 
   return {
